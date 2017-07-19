@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Store</title>
+        <script src="all.js"></script>
+	    <script>
+		    require(['store/config',
+			    'store/EntryStore',
+			    'dojo/dom-construct',
+			    'dojo/_base/array',
+			    'store/html',
+			    'dojo/domReady'             //Wait until the dom is ready.
+		    ], function (config, EntryStore, construct, array, html) {
+			    var es = new EntryStore(config.repository)
+
+			    document.getElementById('search').onclick = function () {
+				    var searchTerm = document.getElementById('input').value
+				    es.newSolrQuery().title(searchTerm).list().getEntries(0).then(function (children) {
+					    document.getElementById('_resultsNode').innerHTML = ''
+					    children.forEach(function (child) {
+						    construct.place(html.print(child), '_resultsNode')
+					    })
+				    })
+			    }
+		    })
+	  </script>
+    </head>
+    <body>
+	    <input id="input" name="search"/>
+	    <button id="search">Search</button>
+	    <hr>
+	    <div id="_resultsNode"></div>
+    </body>
+</html>
